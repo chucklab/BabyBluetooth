@@ -53,7 +53,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
         
     }
     //发送数据，发送当前时间的秒数
-    func sendData(t:Timer)->Bool{
+    @objc func sendData(t:Timer)->Bool{
         let characteristic = t.userInfo as!  CBMutableCharacteristic;
         let dft = DateFormatter();
         dft.dateFormat = "ss";
@@ -86,7 +86,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
         )
     }
     
-    func peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
+    func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         NSLog("in peripheralManagerDidStartAdvertisiong");
     }
     
@@ -94,12 +94,13 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
     func peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didSubscribeToCharacteristic characteristic: CBCharacteristic) {
         NSLog("订阅了 %@的数据",characteristic.uuid)
         //每秒执行一次给主设备发送一个当前时间的秒数
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector:"sendData:" , userInfo: characteristic, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(sendData(t:)), userInfo: characteristic, repeats: true)
+        //timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector:"sendData:" , userInfo: characteristic, repeats: true)
     }
     
     
     //取消订阅characteristics
-    func peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFromCharacteristic characteristic: CBCharacteristic) {
+    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom characteristic: CBCharacteristic) {
         NSLog("取消订阅 %@的数据",characteristic.uuid)
         //取消回应
         timer.invalidate()
@@ -135,8 +136,8 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
         }
     }
     
-    func peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
-            NSLog("peripheralManagerIsReadyToUpdateSubscribers")
+    func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
+        NSLog("peripheralManagerIsReadyToUpdateSubscribers")
     }
 }
 
