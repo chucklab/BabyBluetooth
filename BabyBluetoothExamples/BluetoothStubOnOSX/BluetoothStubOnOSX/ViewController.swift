@@ -75,9 +75,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
         }
     }
     
-    
-    
-    func peripheralManager(peripheral: CBPeripheralManager, didAddService service: CBService, error: NSError?) {
+    func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
         peripheralManager.startAdvertising(
             [
                 CBAdvertisementDataServiceUUIDsKey : [CBUUID(string: ServiceUUID)]
@@ -91,7 +89,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
     }
     
     //订阅characteristics
-    func peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didSubscribeToCharacteristic characteristic: CBCharacteristic) {
+    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
         NSLog("订阅了 %@的数据",characteristic.uuid)
         //每秒执行一次给主设备发送一个当前时间的秒数
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(sendData(t:)), userInfo: characteristic, repeats: true)
@@ -108,7 +106,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
    
     
     //读characteristics请求
-    func peripheralManager(peripheral: CBPeripheralManager, didReceiveReadRequest request: CBATTRequest) {
+    func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
         NSLog("didReceiveReadRequest")
         //判断是否有读数据的权限
         if(request.characteristic.properties.contains(CBCharacteristicProperties.read))
@@ -121,7 +119,7 @@ class ViewController: NSViewController,CBPeripheralManagerDelegate{
         }
     }
     
-    func peripheralManager(peripheral: CBPeripheralManager, didReceiveWriteRequests requests: [CBATTRequest]) {
+    func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
         NSLog("didReceiveWriteRequests")
         let request:CBATTRequest = requests[0];
         
